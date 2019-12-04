@@ -231,9 +231,12 @@ class FormalsListNode extends ASTnode {
      */
     public List<Type> nameAnalysis(SymTable symTab) {
         List<Type> typeList = new LinkedList<Type>();
+        int formalOffset = 4;
         for (FormalDeclNode node : myFormals) {
             Sym sym = node.nameAnalysis(symTab);
             if (sym != null) {
+            	sym.offset = formalOffset;
+            	formalOffset = formalOffset + 4;
                 typeList.add(sym.getType());
             }
         }
@@ -326,8 +329,7 @@ class StmtListNode extends ASTnode {
     
     public int setOffset(int start) {
     	for (StmtNode node : myStmts) {
-    		node.setOffset(start);
-    		start = start - 4;
+    		node.setOffset(start); //FIXME
     	}
     	return start;
     }
@@ -687,7 +689,7 @@ class FormalDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
         myType.unparse(p, 0);
         p.print(" ");
-        p.print(myId.name());
+        p.print(myId.name() + "(" + myId.sym().offset + ")");
     }
 
     // 2 kids
@@ -1096,6 +1098,12 @@ class IfStmtNode extends StmtNode {
         
         myStmtList.typeCheck(retType);
     }
+    
+    public int setOffset(int start) {
+    	start = myDeclList.setOffset(start);
+    	start = myStmtList.setOffset(start);
+    	return start;
+    }
        
     public void unparse(PrintWriter p, int indent) {
         addIndent(p, indent);
@@ -1174,6 +1182,14 @@ class IfElseStmtNode extends StmtNode {
         myThenStmtList.typeCheck(retType);
         myElseStmtList.typeCheck(retType);
     }
+    
+    public int setOffset(int start) {
+    	start = myThenDeclList.setOffset(start);
+    	start = myThenStmtList.setOffset(start);
+    	start = myElseDeclList.setOffset(start);
+    	start = myElseStmtList.setOffset(start);
+    	return start;
+    }
         
     public void unparse(PrintWriter p, int indent) {
         addIndent(p, indent);
@@ -1241,6 +1257,12 @@ class WhileStmtNode extends StmtNode {
         }
         
         myStmtList.typeCheck(retType);
+    }
+    
+    public int setOffset(int start) {
+    	start = myDeclList.setOffset(start);
+    	start = myStmtList.setOffset(start);
+    	return start;
     }
         
     public void unparse(PrintWriter p, int indent) {
