@@ -193,6 +193,14 @@ class DeclListNode extends ASTnode {
         }
     }
     
+    public int setOffset(int start) {
+    	for (DeclNode node : myDecls) {
+    		node.setOffset(start);
+    		start = start - 4;
+    	}
+    	return start;
+    }
+    
     public void unparse(PrintWriter p, int indent) {
         Iterator it = myDecls.iterator();
         try {
@@ -268,7 +276,11 @@ class FnBodyNode extends ASTnode {
      */
     public void nameAnalysis(SymTable symTab) {
         myDeclList.nameAnalysis(symTab);
+        int funOffset = -8;
+        funOffset = myDeclList.setOffset(funOffset);
+        
         myStmtList.nameAnalysis(symTab);
+        funOffset = myStmtList.setOffset(funOffset);
     }    
  
     /**
@@ -276,7 +288,7 @@ class FnBodyNode extends ASTnode {
      */
     public void typeCheck(Type retType) {
         myStmtList.typeCheck(retType);
-    }    
+    } 
           
     public void unparse(PrintWriter p, int indent) {
         myDeclList.unparse(p, indent);
@@ -310,6 +322,14 @@ class StmtListNode extends ASTnode {
         for(StmtNode node : myStmts) {
             node.typeCheck(retType);
         }
+    }
+    
+    public int setOffset(int start) {
+    	for (StmtNode node : myStmts) {
+    		node.setOffset(start);
+    		start = start - 4;
+    	}
+    	return start;
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -393,6 +413,7 @@ abstract class DeclNode extends ASTnode {
 
     // default version of typeCheck for non-function decls
     public void typeCheck() { }
+    public int setOffset(int start) {return start;};
 }
 
 class VarDeclNode extends DeclNode {
@@ -481,13 +502,23 @@ class VarDeclNode extends DeclNode {
         }
         
         return sym;
-    }    
+    }   
+    
+    public int setOffset(int start) {
+    	myId.sym().offset = start;
+    	return start;
+    }
     
     public void unparse(PrintWriter p, int indent) {
         addIndent(p, indent);
         myType.unparse(p, 0);
         p.print(" ");
-        p.print(myId.name());
+        if (myId.sym() != null) {
+        	p.print(myId.name() + "(" + myId.sym().offset + ")");
+        }
+        else {
+        	p.print(myId.name());
+        }
         p.println(";");
     }
 
@@ -823,6 +854,7 @@ class StructNode extends TypeNode {
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
     abstract public void typeCheck(Type retType);
+    public int setOffset(int start) {return start;};
 }
 
 class AssignStmtNode extends StmtNode {
