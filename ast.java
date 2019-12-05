@@ -277,13 +277,15 @@ class FnBodyNode extends ASTnode {
      * - process the declaration list
      * - process the statement list
      */
-    public void nameAnalysis(SymTable symTab) {
+    public void nameAnalysis(SymTable symTab, Sym fnName) {
         myDeclList.nameAnalysis(symTab);
         int funOffset = -8;
         funOffset = myDeclList.setOffset(funOffset);
         
         myStmtList.nameAnalysis(symTab);
         funOffset = myStmtList.setOffset(funOffset);
+        
+        fnName.funSize = Math.abs(funOffset) - 8;
     }    
  
     /**
@@ -329,7 +331,7 @@ class StmtListNode extends ASTnode {
     
     public int setOffset(int start) {
     	for (StmtNode node : myStmts) {
-    		node.setOffset(start); //FIXME
+    		start = node.setOffset(start); //FIXME
     	}
     	return start;
     }
@@ -589,11 +591,12 @@ class FnDeclNode extends DeclNode {
         
         // process the formals
         List<Type> typeList = myFormalsList.nameAnalysis(symTab);
+        sym.formalsSize = typeList.size() * 4;
         if (sym != null) {
             sym.addFormals(typeList);
         }
         
-        myBody.nameAnalysis(symTab); // process the function body
+        myBody.nameAnalysis(symTab, sym); // process the function body
         
         try {
             symTab.removeScope();  // exit scope
@@ -617,7 +620,7 @@ class FnDeclNode extends DeclNode {
         addIndent(p, indent);
         myType.unparse(p, 0);
         p.print(" ");
-        p.print(myId.name());
+        p.print(myId.name() + "(" + myId.sym().funSize + ", " + myId.sym().formalsSize + ")");
         p.print("(");
         myFormalsList.unparse(p, 0);
         p.println(") {");

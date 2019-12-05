@@ -7,6 +7,8 @@ import java.util.*;
 public class Sym {
     private Type type;
     public int offset;
+    public int funSize;
+    public int formalsSize;
     
     public Sym(Type type) {
         this.type = type;
