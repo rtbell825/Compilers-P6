@@ -1598,7 +1598,11 @@ class IntLitNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        Codegen.p = p;
+	//load int value into t0
+	Codegen.generate("li","$t0", myIntVal);
+	//push t0
+	Codegen.genPush("$t0"); 
     }
 
     
@@ -1681,7 +1685,11 @@ class TrueNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+	Codegen.p = p;
+	//load t0 with 1 for true
+        Codegen.generate("li","$t0", 1);
+    	//push t0
+	Codegen.genPush("$t0");
     }
         
     public void unparse(PrintWriter p, int indent) {
@@ -1720,7 +1728,11 @@ class FalseNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        Codegen.p = p;
+	//load t0 with 0 for false
+	Codegen.generate("li", "$t0", 0);
+	//push t0
+	Codegen.genPush("$t0");
     }  
 
     public void unparse(PrintWriter p, int indent) {

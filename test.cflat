@@ -11,5 +11,9 @@ void main () {
      	int x;
      	int y;
      }
+
+     x = 5;
+     b = true;
+     b = false;
      return;
 }

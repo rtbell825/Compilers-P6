@@ -11,6 +11,8 @@ void main(20, 0)() {
         int x(-20);
         int y(-24);
     }
+    x(int) = 5;
+    b(bool) = true;
     return;
 }
 
