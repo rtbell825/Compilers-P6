@@ -148,7 +148,8 @@ class ProgramNode extends ASTnode {
     }
    
     public void codeGen(PrintWriter p) {
-	    //do stuff
+	    myDeclList.codeGen(p);
+	    return;
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -198,7 +199,12 @@ class DeclListNode extends ASTnode {
     }
     
     public void codeGen(PrintWriter p) {
-            //do stuff
+        p.println("     .data");
+        p.println("     .align 2");
+    	for(DeclNode node : myDecls) {
+        	node.codeGen(p);
+        }
+        return;
     }
 
 
@@ -446,6 +452,7 @@ abstract class DeclNode extends ASTnode {
 
     // default version of typeCheck for non-function decls
     public void typeCheck() { }
+    public void codeGen(PrintWriter p) {return;};
     public int setOffset(int start) {return start;};
 }
 
@@ -518,6 +525,9 @@ class VarDeclNode extends DeclNode {
                     sym = new Sym(myType.type());
                 }
                 symTab.addDecl(name, sym);
+                if (symTab.isGlobal(name)) {
+                	sym.isGlobal = true;
+                }
                 myId.link(sym);
             } catch (DuplicateSymException ex) {
                 System.err.println("Unexpected DuplicateSymException " +
@@ -543,7 +553,10 @@ class VarDeclNode extends DeclNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        if (myId.sym().isGlobal == true) {
+        	p.println("_" + myId.name() + ": .space 4");
+        }
+        return;
     }
 
     
@@ -651,7 +664,9 @@ class FnDeclNode extends DeclNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        if (myId.name().equals("main")) {
+        	p.println("     .text");
+        }
     }
         
     public void unparse(PrintWriter p, int indent) {

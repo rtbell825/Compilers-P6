@@ -55,6 +55,14 @@ public class SymTable {
         return null;
     }
     
+    public boolean isGlobal(String s) {
+    	if (list.get(list.size() - 1).containsKey(s)) {
+    		return true;
+    	}
+    	return false;
+    	
+    }
+    
     public void removeScope() throws EmptySymTableException {
         if (list.isEmpty())
             throw new EmptySymTableException();

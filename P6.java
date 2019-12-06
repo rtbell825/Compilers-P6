@@ -155,7 +155,7 @@ public class P6 {
 			return P6.RESULT_TYPE_ERROR;
 		}
 		
-		astRoot.unparse(outFile, 0);
+		astRoot.codeGen(outFile);
 
 		//////////////////////////
 		// TODO: Calling codeGen   //

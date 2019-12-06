@@ -9,9 +9,11 @@ public class Sym {
     public int offset;
     public int funSize;
     public int formalsSize;
+    public boolean isGlobal;
     
     public Sym(Type type) {
         this.type = type;
+        this.isGlobal = false;
     }
     
     public Type getType() {
