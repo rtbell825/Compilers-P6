@@ -1129,6 +1129,7 @@ class WriteStmtNode extends StmtNode {
      */
     public void typeCheck(Type retType) {
         Type type = myExp.typeCheck();
+	myType =  type;
         
         if (type.isFnType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
@@ -1152,7 +1153,23 @@ class WriteStmtNode extends StmtNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+	Codegen.p = p;
+	
+	Codegen.genPop("$a0");
+	
+	//1 is used for ints, bool is represented as int (0 or 1)
+	if(myType.isIntType() || myType.isBoolType()){
+	    Codegen.generate("li", "$v0", "1");
+	}
+	//4 is used for string
+	else if(myType.isStringType()){
+	    Codegen.generate("li", "$v0", "4");
+	}
+	else{
+	    ErrMsg.fatal(0,0,"error in writestmtnode" + myType);
+	}
+
+	Codegen.generate("syscall");
     }
      
 
@@ -1165,6 +1182,7 @@ class WriteStmtNode extends StmtNode {
 
     // 1 kid
     private ExpNode myExp;
+    private Type myType;
 }
 
 class IfStmtNode extends StmtNode {
@@ -1659,7 +1677,17 @@ class StringLitNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        Codegen.p = p;
+
+	//label for string literal
+	String myLabel = Codegen.nextLabel();
+	
+	p.println(myLabel + "\t.asciiz\t" + myStrVal); 
+	
+	//load address t0 with string label
+	Codegen.generate("la","$t0",myLabel);
+	
+	Codegen.genPush("$t0");
     }
     
     
