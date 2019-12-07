@@ -199,10 +199,18 @@ class DeclListNode extends ASTnode {
     }
     
     public void codeGen(PrintWriter p) {
-        p.println("     .data");
-        p.println("     .align 2");
+        p.println("\t.data");
+        p.println("\t.align 2");
+        int firstFunc = 0;
     	for(DeclNode node : myDecls) {
-        	node.codeGen(p);
+        	if (node.isFunc == true && firstFunc < 1) {
+        		p.println("\t.text");
+        		firstFunc = 1;
+        		node.codeGen(p);
+        	}
+        	else {
+        		node.codeGen(p);
+        	}
         }
         return;
     }
@@ -315,8 +323,8 @@ class FnBodyNode extends ASTnode {
         myStmtList.typeCheck(retType);
     } 
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        
     }
 
 
@@ -454,6 +462,7 @@ abstract class DeclNode extends ASTnode {
     public void typeCheck() { }
     public void codeGen(PrintWriter p) {return;};
     public int setOffset(int start) {return start;};
+    public boolean isFunc = false;
 }
 
 class VarDeclNode extends DeclNode {
@@ -556,6 +565,7 @@ class VarDeclNode extends DeclNode {
         if (myId.sym().isGlobal == true) {
         	p.println("_" + myId.name() + ": .space 4");
         }
+        
         return;
     }
 
@@ -590,6 +600,7 @@ class FnDeclNode extends DeclNode {
         myId = id;
         myFormalsList = formalList;
         myBody = body;
+        isFunc = true;
     }
 
     /**
@@ -665,7 +676,37 @@ class FnDeclNode extends DeclNode {
 
     public void codeGen(PrintWriter p) {
         if (myId.name().equals("main")) {
-        	p.println("     .text");
+        	p.println("\t.globl main");
+        	p.println("main:\t\t# METHOD ENTRY");
+        	p.println("__start:\t# add __start label for main only");
+        }
+        else {
+        	p.println("" + myId.name() + ":\t\t# METHOD ENTRY");
+        }
+        
+        Codegen.genPush("$ra");
+        Codegen.genPush("$fp");
+        
+        Codegen.generate("addu", "$fp", "$sp", "" + (8 + myId.sym().formalsSize));
+        if (myId.sym().funSize > 0) {
+        	Codegen.generate("subu", "$sp", "$sp", "" + myId.sym().funSize);
+        }
+        
+        String retLabel = ("_" + myId.name() + "_Exit");
+        myBody.codeGen(p, retLabel);
+        
+        p.println("\t\t# FUNCTION EXIT");
+        Codegen.genLabel(retLabel);
+        Codegen.generate("lw", "$ra", "0($fp)");
+        Codegen.generateWithComment("move", " save control link", "$t0", "$fp");
+        Codegen.generateWithComment("lw", " restore FP", "$fp", "-4($fp)");
+        Codegen.generateWithComment("move", " restore SP", "$sp", "$t0");
+        if (myId.name().equals("main")) {
+	        Codegen.generateWithComment("li", " load exit code for syscall", "$v0", "10");
+	        Codegen.generateWithComment("syscall", " only do this for main");
+	    }
+        else {
+        	Codegen.generateWithComment("jr", "return", "$ra");
         }
     }
         
@@ -1568,7 +1609,7 @@ class ReturnStmtNode extends StmtNode {
         
     }
 
-    public void codeGen(PrintWriter p) {
+    public void codeGen(PrintWriter p, String retLabel) {
             //do stuff
     }
 
