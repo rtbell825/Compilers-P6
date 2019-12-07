@@ -10,6 +10,7 @@ void main () {
      int y;
      bool b;
      globalInt = 0;
+     cin >> globalInt;
      y = func(x, b);
      if (y == 0) {
      	int x;

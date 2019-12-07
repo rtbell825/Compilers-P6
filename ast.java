@@ -1163,8 +1163,24 @@ class ReadStmtNode extends StmtNode {
         }
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        p.println("\t\t#READ");
+    	Codegen.generate("li", "$v0", "5");
+    	Codegen.generate("syscall");
+    	Codegen.genPush("$v0");
+    	
+    	myExp.codeGen(p);
+        Codegen.genPop("$t0");
+        Codegen.genPop("$t1");
+        Codegen.generate("move", "$t0", "$t1");
+        
+        if(((IdNode)myExp).sym().isGlobal) {
+        	Codegen.generateWithComment("sw", " store global variable " + ((IdNode)myExp).name(), "$t0", "_" + ((IdNode)myExp).name());
+        }
+        else {
+        	Codegen.generateIndexed("sw", "$t0", "$fp", ((IdNode)myExp).sym().offset, " store local variable " + ((IdNode)myExp).name());
+        }
+        
     }
 
     
@@ -2166,7 +2182,18 @@ class AssignNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myLhs.codeGen(p);
+        Codegen.genPop("$t0");
+        myExp.codeGen(p);
+        Codegen.genPop("$t1");
+        Codegen.generate("move", "$t0", "$t1");
+        
+        if(((IdNode)myLhs).sym().isGlobal) {
+        	Codegen.generateWithComment("sw", " store global variable " + ((IdNode)myLhs).name(), "$t0", "_" + ((IdNode)myLhs).name());
+        }
+        else {
+        	Codegen.generateIndexed("sw", "$t0", "$fp", ((IdNode)myLhs).sym().offset, " store local variable " + ((IdNode)myLhs).name());
+        }
     }
     
     public void unparse(PrintWriter p, int indent) {
