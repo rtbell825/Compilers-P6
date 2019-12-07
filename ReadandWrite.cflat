@@ -1,0 +1,13 @@
+int globalInt;
+
+void main () {
+     int x;
+     bool b;
+     globalInt = 0;
+     b = false;
+     cin >> globalInt;
+     x = globalInt;
+     cout << x;
+     ///cout << b;
+     return;
+}

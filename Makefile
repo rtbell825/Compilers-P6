@@ -58,6 +58,10 @@ EmptySymTableException.class: EmptySymTableException.java
 #
 test:
 	java -cp $(CP) P6 test.cflat test.s
+	java -cp $(CP) P6 SetUpMethods.cflat SetUpMethods.s
+	java -cp $(CP) P6 VarDecls.cflat VarDecls.s
+	java -cp $(CP) P6 VarAssignments.cflat VarAssignments.s
+	java -cp $(CP) P6 ReadandWrite.cflat ReadandWrite.s
 
 ###
 # clean
@@ -66,4 +70,4 @@ clean:
 	rm -f *~ *.class parser.java cflat.jlex.java sym.java
 
 cleantest:
-	rm -f test.s
+	rm -f *~ *.s

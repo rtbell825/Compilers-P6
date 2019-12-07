@@ -1,0 +1,21 @@
+int globalInt;
+bool globalBool;
+
+int func(int a, bool b) {
+	return a;
+}
+
+void main () {
+     int x;
+     int y;
+     bool b;
+     globalInt = 0;
+     y = func(x, b);
+
+     x = 5;
+     globalInt++;
+     x++;
+     b = true;
+     b = false;
+     return;
+}

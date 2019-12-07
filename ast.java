@@ -1236,8 +1236,10 @@ class WriteStmtNode extends StmtNode {
         }
     }
 
-    public void codeGen(PrintWriter p) {
-	Codegen.p = p;
+    public void codeGen(PrintWriter p, String retLabel) {
+    	p.println("\t\t#WRITE");
+    	
+    	myExp.codeGen(p);
 	
 	Codegen.genPop("$a0");
 	
@@ -1318,8 +1320,8 @@ class IfStmtNode extends StmtNode {
     	return start;
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        
     }
        
     public void unparse(PrintWriter p, int indent) {

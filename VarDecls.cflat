@@ -1,0 +1,9 @@
+int globalInt;
+bool globalBool;
+
+void main () {
+     int x;
+     int y;
+     bool b;
+     return;
+}
