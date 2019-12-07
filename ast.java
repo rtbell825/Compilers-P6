@@ -324,7 +324,7 @@ class FnBodyNode extends ASTnode {
     } 
 
     public void codeGen(PrintWriter p, String retLabel) {
-        
+        myStmtList.codeGen(p, retLabel);
     }
 
 
@@ -362,8 +362,10 @@ class StmtListNode extends ASTnode {
         }
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        for(StmtNode node : myStmts) {
+        	node.codeGen(p, retLabel);
+        }
     }
 
     
@@ -687,10 +689,11 @@ class FnDeclNode extends DeclNode {
         Codegen.genPush("$ra");
         Codegen.genPush("$fp");
         
-        Codegen.generate("addu", "$fp", "$sp", "" + (8 + myId.sym().formalsSize));
+        //Codegen.generate("subu", "$fp", "$sp", "" + (8 + myId.sym().formalsSize));
         if (myId.sym().funSize > 0) {
         	Codegen.generate("subu", "$sp", "$sp", "" + myId.sym().funSize);
         }
+        Codegen.generate("addu", "$fp", "$sp", "" + (8 + myId.sym().funSize));
         
         String retLabel = ("_" + myId.name() + "_Exit");
         myBody.codeGen(p, retLabel);
@@ -983,6 +986,7 @@ class StructNode extends TypeNode {
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
     abstract public void typeCheck(Type retType);
+    public void codeGen(PrintWriter p, String retLabel) {return;};
     public int setOffset(int start) {return start;};
 }
 
@@ -1006,8 +1010,9 @@ class AssignStmtNode extends StmtNode {
         myAssign.typeCheck();
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        p.println("\t\t#ASSIGN");
+    	myAssign.codeGen(p);
     }
 
         
@@ -1046,8 +1051,19 @@ class PostIncStmtNode extends StmtNode {
         }
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        p.println("\t\t#POSTINC");
+        myExp.codeGen(p);
+        Codegen.genPop("$t0");
+        Codegen.generate("addu", "$t0", "$t0", 1);
+        //Codegen.genPush("$t0");
+        
+        if(((IdNode)myExp).sym().isGlobal) {
+        	Codegen.generateWithComment("sw", " store global variable " + ((IdNode)myExp).name(), "$t0", "_" + ((IdNode)myExp).name());
+        }
+        else {
+        	Codegen.generateIndexed("sw", "$t0", "$fp", ((IdNode)myExp).sym().offset, " store local variable " + ((IdNode)myExp).name());
+        }
     }
 
         
@@ -1087,7 +1103,18 @@ class PostDecStmtNode extends StmtNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+    	p.println("\t\t#POSTDEC");
+        myExp.codeGen(p);
+        Codegen.genPop("$t0");
+        Codegen.generate("subu", "$t0", "$t0", 1);
+        //Codegen.genPush("$t0");
+        
+        if(((IdNode)myExp).sym().isGlobal) {
+        	Codegen.generateWithComment("sw", " store global variable " + ((IdNode)myExp).name(), "$t0", "_" + ((IdNode)myExp).name());
+        }
+        else {
+        	Codegen.generateIndexed("sw", "$t0", "$fp", ((IdNode)myExp).sym().offset, " store local variable " + ((IdNode)myExp).name());
+        }
     }
 
         
@@ -1637,6 +1664,7 @@ abstract class ExpNode extends ASTnode {
      * Default version for nodes with no names
      */
     public void nameAnalysis(SymTable symTab) { }
+    public void codeGen(PrintWriter p) {return;};
     
     abstract public Type typeCheck();
     abstract public int lineNum();
@@ -1899,7 +1927,13 @@ class IdNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        if(mySym.isGlobal) {
+        	Codegen.generateWithComment("lw", " Load global variable " + myStrVal, "$t0", "_" + myStrVal);
+        }
+        else {
+        	Codegen.generateIndexed("lw", "$t0", "$fp", mySym.offset, " Load local variable " + myStrVal);
+        }
+        Codegen.genPush("$t0");
     }
            
     public void unparse(PrintWriter p, int indent) {
