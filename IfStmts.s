@@ -1,21 +1,6 @@
 	.data
 	.align 2
-_globalInt: .space 4
-_globalBool: .space 4
 	.text
-func:		# METHOD ENTRY
-	sw    $ra, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	sw    $fp, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	addu  $fp, $sp, 8
-		# FUNCTION EXIT
-_func_Exit:
-	lw    $ra, 0($fp)
-	move  $t0, $fp		# save control link
-	lw    $fp, -4($fp)		# restore FP
-	move  $sp, $t0		# restore SP
-	jr    $ra		#return
 	.globl main
 main:		# METHOD ENTRY
 __start:	# add __start label for main only
@@ -23,10 +8,10 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	sw    $fp, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
-	subu  $sp, $sp, 20
-	addu  $fp, $sp, 28
+	subu  $sp, $sp, 12
+	addu  $fp, $sp, 20
 		#ASSIGN
-	lw    $t0, _globalInt		# Load global variable globalInt
+	lw    $t0, -8($fp)	# Load local variable x
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
@@ -37,72 +22,13 @@ __start:	# add __start label for main only
 	lw    $t1, 4($sp)	#POP
 	addu  $sp, $sp, 4
 	move  $t0, $t1
-	sw    $t0, _globalInt		# store global variable globalInt
-		#READ
-	li    $v0, 5
-	syscall
-	sw    $v0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t0, _globalInt		# Load global variable globalInt
-	sw    $t0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t0, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	lw    $t1, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	move  $t0, $t1
-	sw    $t0, _globalInt		# store global variable globalInt
-		#ASSIGN
-	lw    $t0, -12($fp)	# Load local variable y
-	sw    $t0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t0, 4($sp)	#POP
-	addu  $sp, $sp, 4
-		#CALL
-	jal   _func
-	sw    $v0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t1, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	move  $t0, $t1
-	sw    $t0, -12($fp)	# store local variable y
+	sw    $t0, -8($fp)	# store local variable x
 		#IF-THEN
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
 	beq   $t0, 0, .L0		#branch if false
-	j     .L0
-.L0:
 		#ASSIGN
-	lw    $t0, -8($fp)	# Load local variable x
-	sw    $t0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t0, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	li    $t0, 5
-	sw    $t0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t1, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	move  $t0, $t1
-	sw    $t0, -8($fp)	# store local variable x
-		#POSTINC
-	lw    $t0, _globalInt		# Load global variable globalInt
-	sw    $t0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t0, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	addu  $t0, $t0, 1
-	sw    $t0, _globalInt		# store global variable globalInt
-		#POSTINC
-	lw    $t0, -8($fp)	# Load local variable x
-	sw    $t0, 0($sp)	#PUSH
-	subu  $sp, $sp, 4
-	lw    $t0, 4($sp)	#POP
-	addu  $sp, $sp, 4
-	addu  $t0, $t0, 1
-	sw    $t0, -8($fp)	# store local variable x
-		#ASSIGN
-	lw    $t0, -16($fp)	# Load local variable b
+	lw    $t0, -16($fp)	# Load local variable a
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
@@ -113,20 +39,69 @@ __start:	# add __start label for main only
 	lw    $t1, 4($sp)	#POP
 	addu  $sp, $sp, 4
 	move  $t0, $t1
-	sw    $t0, -16($fp)	# store local variable b
+	sw    $t0, -16($fp)	# store local variable a
+	j     .L0
+.L0:
 		#ASSIGN
-	lw    $t0, -16($fp)	# Load local variable b
+	lw    $t0, -8($fp)	# Load local variable x
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
-	li    $t0, 0
+	li    $t0, 1
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
 	lw    $t1, 4($sp)	#POP
 	addu  $sp, $sp, 4
 	move  $t0, $t1
-	sw    $t0, -16($fp)	# store local variable b
+	sw    $t0, -8($fp)	# store local variable x
+		#IF-ELSE
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L2		#branch to else if false
+		#ASSIGN
+	lw    $t0, -8($fp)	# Load local variable x
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	li    $t0, 2
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	move  $t0, $t1
+	sw    $t0, -8($fp)	# store local variable x
+	j     .L1
+.L2:
+		#ASSIGN
+	lw    $t0, -8($fp)	# Load local variable x
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	li    $t0, 3
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	move  $t0, $t1
+	sw    $t0, -8($fp)	# store local variable x
+	j     .L1
+.L1:
+		#ASSIGN
+	lw    $t0, -8($fp)	# Load local variable x
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	li    $t0, 4
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	move  $t0, $t1
+	sw    $t0, -8($fp)	# store local variable x
 		# FUNCTION EXIT
 _main_Exit:
 	lw    $ra, 0($fp)

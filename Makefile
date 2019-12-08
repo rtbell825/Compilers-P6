@@ -62,7 +62,8 @@ test:
 	java -cp $(CP) P6 VarDecls.cflat VarDecls.s
 	java -cp $(CP) P6 VarAssignments.cflat VarAssignments.s
 	java -cp $(CP) P6 ReadandWrite.cflat ReadandWrite.s
-	java -cp $(CP) P6 expnodetests.cflat expnodetests.s
+	java -cp $(CP) P6 IfStmts.cflat IfStmts.s
+	
 
 ###
 # clean

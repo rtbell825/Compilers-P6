@@ -1321,7 +1321,15 @@ class IfStmtNode extends StmtNode {
     }
 
     public void codeGen(PrintWriter p, String retLabel) {
-        
+        p.println("\t\t#IF-THEN");
+        String nextLabel = Codegen.nextLabel();
+    	myExp.codeGen(p);
+    	Codegen.genPop("$t0");
+    	Codegen.generateWithComment("beq", "branch if false", "$t0", "0", nextLabel);
+    	myStmtList.codeGen(p, retLabel);
+    	Codegen.generate("j", nextLabel);
+    	Codegen.genLabel(nextLabel);
+    	
     }
        
     public void unparse(PrintWriter p, int indent) {
@@ -1410,8 +1418,20 @@ class IfElseStmtNode extends StmtNode {
     	return start;
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+    	p.println("\t\t#IF-ELSE");
+        String throughLabel = Codegen.nextLabel();
+        String elseLabel = Codegen.nextLabel();
+    	myExp.codeGen(p);
+    	Codegen.genPop("$t0");
+    	Codegen.generateWithComment("beq", "branch to else if false", "$t0", "0", elseLabel);
+    	myThenStmtList.codeGen(p, retLabel);
+    	Codegen.generate("j", throughLabel);
+    	Codegen.genLabel(elseLabel);
+    	myElseStmtList.codeGen(p, retLabel);
+    	Codegen.generate("j", throughLabel);
+    	
+    	Codegen.genLabel(throughLabel);
     }
 
         
