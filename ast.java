@@ -1688,7 +1688,6 @@ class ReturnStmtNode extends StmtNode {
         p.println("\t\t#RETURN");
 	if(myExp != null){
 	    myExp.codeGen(p);
-	    Codegen.p = p;
 	    Codegen.genPop("$v0");
 	}
 
@@ -1756,7 +1755,6 @@ class IntLitNode extends ExpNode {
 
     public void codeGen(PrintWriter p) {
 	p.println("\t\t#INT");
-        Codegen.p = p;
 	//load int value into t0
 	Codegen.generate("li","$t0", myIntVal);
 	//push t0
@@ -1803,7 +1801,6 @@ class StringLitNode extends ExpNode {
 
     public void codeGen(PrintWriter p) {
 	p.println("\t\t#STRING");
-        Codegen.p = p;
 
 	//label for string literal
 	String myLabel = Codegen.nextLabel();
@@ -1855,7 +1852,6 @@ class TrueNode extends ExpNode {
 
     public void codeGen(PrintWriter p) {
 	p.println("\t\tTRUE");
-	Codegen.p = p;
 	//load t0 with 1 for true
         Codegen.generate("li","$t0", 1);
     	//push t0
@@ -1899,7 +1895,6 @@ class FalseNode extends ExpNode {
 
     public void codeGen(PrintWriter p) {
 	p.println("\t\tFALSE");
-        Codegen.p = p;
 	//load t0 with 0 for false
 	Codegen.generate("li", "$t0", 0);
 	//push t0
@@ -2320,7 +2315,6 @@ class CallExpNode extends ExpNode {
         p.println("\t\t#CALL");
 	myExpList.codeGen(p);
 	
-	Codegen.p = p;
 	Codegen.generate("jal","_"+myId.name());
 	Codegen.genPush("$v0");
     }
@@ -2442,7 +2436,6 @@ class UnaryMinusNode extends UnaryExpNode {
     public void codeGen(PrintWriter p) {
         p.println("\t\t#UNARYMINUS");
         myExp.codeGen(p);
-        Codegen.p = p;
         Codegen.genPop("$t0");
         Codegen.generate("neg", "$t0", "$t0", "0");
         Codegen.genPush("$t0");
@@ -2485,7 +2478,6 @@ class NotNode extends UnaryExpNode {
     public void codeGen(PrintWriter p) {
 	p.println("\t\t#NOT");
         myExp.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t0");
 	Codegen.generate("seq", "$t0", "$t0", "0");
 	Codegen.genPush("$t0");
@@ -2661,7 +2653,6 @@ class PlusNode extends ArithmeticExpNode {
 	p.println("\t\t#PLUS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
 	Codegen.generate("add", "$t0", "$t0", "$t1");
@@ -2688,7 +2679,6 @@ class MinusNode extends ArithmeticExpNode {
 	p.println("\t\t#MINUS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
 	Codegen.generate("sub", "$t0", "$t0", "$t1");
@@ -2713,7 +2703,6 @@ class TimesNode extends ArithmeticExpNode {
 	p.println("\t\tTIMES");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
 	Codegen.generate("mulo", "$t0", "$t0", "$t1");
@@ -2738,7 +2727,6 @@ class DivideNode extends ArithmeticExpNode {
 	p.println("\t\t#DIVIDE");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
 	Codegen.generate("div", "$t0", "$t0", "$t1");
@@ -2801,7 +2789,6 @@ class EqualsNode extends EqualityExpNode {
 	Type type1 = myExp1.typeCheck();
         Type type2 = myExp2.typeCheck();
 
-	Codegen.p = p;
 	myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	// String
@@ -2854,7 +2841,6 @@ class NotEqualsNode extends EqualityExpNode {
 	
 	myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	//String
 	if(type1.isStringType() && type2.isStringType()){
 	    if(myExp1.equals(myExp2)){
@@ -2897,7 +2883,6 @@ class LessNode extends RelationalExpNode {
 	p.println("\t\t#LESS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
 	Codegen.generate("slt", "$t0", "$t0", "$t1");
@@ -2946,10 +2931,9 @@ class LessEqNode extends RelationalExpNode {
 	p.println("\t\t#LESSEQUAL");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("sle", "$t0", "$t0", "$t1");
+	Codegen.generate("slt", "$t0", "$t0", "$t1"); //fixme
 	Codegen.genPush("$t0");
     }
 
@@ -2971,10 +2955,9 @@ class GreaterEqNode extends RelationalExpNode {
 	p.println("\t\t#GREATEREQUAL");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("sge", "$t0", "$t0", "$t1");
+	Codegen.genPop("$t1");
+	Codegen.generate("slt", "$t0", "$t0", "$t1"); //fixme
 	Codegen.genPush("$t0");
     }
 
