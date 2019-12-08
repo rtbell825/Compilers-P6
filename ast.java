@@ -2276,7 +2276,12 @@ class CallExpNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        p.println("\t\t#CALL");
+	myExpList.codeGen(p);
+	
+	Codegen.p = p;
+	Codegen.generate("jal","_"+myId.name());
+	Codegen.genPush("$v0");
     }
         
     // ** unparse **
@@ -2431,7 +2436,12 @@ class NotNode extends UnaryExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+	p.println("\t\t#not");
+        myExp.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t0");
+	Codegen.generate("seq", "$t0", "$t0", "0");
+	Codegen.genPush("$t0");
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -2601,7 +2611,14 @@ class PlusNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("add", "$t0", "$t0", "$t1");
+
+	Codegen.genPush("$t0");
     }
 
     
@@ -2620,7 +2637,13 @@ class MinusNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("sub", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2638,7 +2661,13 @@ class TimesNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("mulo", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2656,7 +2685,14 @@ class DivideNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("div", "$t0", "$t0", "$t1");
+
+	Codegen.genPush("$t0");
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2746,7 +2782,14 @@ class LessNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("slt", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2764,7 +2807,13 @@ class GreaterNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("sgt", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -2782,7 +2831,13 @@ class LessEqNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("sle", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -2800,7 +2855,13 @@ class GreaterEqNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("sge", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
     }
 
     public void unparse(PrintWriter p, int indent) {
