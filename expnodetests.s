@@ -147,6 +147,58 @@ __start:	# add __start label for main only
 	beq   $t0, 0, .L3		#branch if false
 	j     .L3
 .L3:
+		#IF-THEN
+		#EQUALS
+	lw    $t0, -8($fp)	# Load local variable a
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, -12($fp)	# Load local variable b
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	seq   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L4		#branch if false
+	j     .L4
+.L4:
+		#IF-THEN
+		#NOTEQUAL
+	lw    $t0, -8($fp)	# Load local variable a
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, -12($fp)	# Load local variable b
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	sne   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L5		#branch if false
+	j     .L5
+.L5:
+		#IF-THEN
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L6		#branch if false
+	j     .L6
+.L6:
+		#IF-THEN
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L7		#branch if false
+	j     .L7
+.L7:
 		# FUNCTION EXIT
 _main_Exit:
 	lw    $ra, 0($fp)

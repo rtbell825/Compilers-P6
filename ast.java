@@ -2423,7 +2423,13 @@ class UnaryMinusNode extends UnaryExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        p.println("\t\t#UNARYMINUS");
+        myExp.codeGen(p);
+        Codegen.p = p;
+        Codegen.genPop("$t0");
+        Codegen.generate("neg", "$t0", "$t0", "0");
+        Codegen.genPush("$t0");
+
     }
 
 
