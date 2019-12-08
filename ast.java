@@ -2749,7 +2749,22 @@ class AndNode extends LogicalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+	String isTrueLabel = Codegen.nextLabel();
+	String finishedLabel = Codegen.nextLabel();
+
+	//check LHS
+        myExp1.codeGen(p);
+	Codegen.p = p;
+	Codegen.genPop("$t0");
+	Codegen.generate("beq", "$t0", "0", isTrueLabel);
+	
+	//check RHS
+	myExp2.codeGen(p);
+	Codegen.generate("b", finishedLabel);
+	Codegen.genLabel(isTrueLabel, "&& LHS false");
+
+	Codegen.genPush("$t0");
+	Codegen.genLabel(finishedLabel, "&& finished");
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2767,7 +2782,21 @@ class OrNode extends LogicalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+	String isTrueLabel = Codegen.nextLabel();
+        String finishedLabel = Codegen.nextLabel();
+
+	//check LHS
+        myExp1.codeGen(p);
+	Codegen.genPop("$t0");
+	Codegen.generate("beq", "$t0", "1", isTrueLabel);
+	
+	//checkRHS
+	myExp2.codeGen(p);
+	Codegen.generate("b", finishedLabel);
+
+	Codegen.genLabel(isTrueLabel, "|| LHS true");
+	Codegen.genPush("$t0");
+	Codegen.genLabel(finishedLabel, "|| finished");
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2909,7 +2938,7 @@ class GreaterNode extends RelationalExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
 	Codegen.genPop("$t1");
-	Codegen.generate("slt", "$t0", "$t0", "$t1");
+	Codegen.generate("sgt", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
 
@@ -2933,7 +2962,7 @@ class LessEqNode extends RelationalExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("slt", "$t0", "$t0", "$t1"); //fixme
+	Codegen.generate("sle", "$t0", "$t0", "$t1"); //fixme
 	Codegen.genPush("$t0");
     }
 
@@ -2957,7 +2986,7 @@ class GreaterEqNode extends RelationalExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
 	Codegen.genPop("$t1");
-	Codegen.generate("slt", "$t0", "$t0", "$t1"); //fixme
+	Codegen.generate("sge", "$t0", "$t0", "$t1"); //fixme
 	Codegen.genPush("$t0");
     }
 
