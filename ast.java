@@ -1618,7 +1618,7 @@ class CallStmtNode extends StmtNode {
     }
     
     public void codeGen(PrintWriter p) {
-            //do stuff
+        myCall.codeGen(p);
     }
 
 
@@ -1674,8 +1674,15 @@ class ReturnStmtNode extends StmtNode {
         
     }
 
-    public void codeGen(PrintWriter p, String retLabel) {
-            //do stuff
+    public void codeGen(PrintWriter p, String myLabel) {
+        p.println("\t\t#RETURN");
+	if(myExp != null){
+	    myExp.codeGen(p);
+	    Codegen.p = p;
+	    Codegen.genPop("$v0");
+	}
+
+	Codegen.generate("b", myLabel);
     }
 
     
