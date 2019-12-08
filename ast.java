@@ -1738,6 +1738,7 @@ class IntLitNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#INT");
         Codegen.p = p;
 	//load int value into t0
 	Codegen.generate("li","$t0", myIntVal);
@@ -1784,6 +1785,7 @@ class StringLitNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#STRING");
         Codegen.p = p;
 
 	//label for string literal
@@ -1835,6 +1837,7 @@ class TrueNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\tTRUE");
 	Codegen.p = p;
 	//load t0 with 1 for true
         Codegen.generate("li","$t0", 1);
@@ -1878,6 +1881,7 @@ class FalseNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\tFALSE");
         Codegen.p = p;
 	//load t0 with 0 for false
 	Codegen.generate("li", "$t0", 0);
@@ -2456,7 +2460,7 @@ class NotNode extends UnaryExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-	p.println("\t\t#not");
+	p.println("\t\t#NOT");
         myExp.codeGen(p);
 	Codegen.p = p;
 	Codegen.genPop("$t0");
@@ -2631,6 +2635,7 @@ class PlusNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#PLUS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;
@@ -2657,6 +2662,7 @@ class MinusNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#MINUS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;
@@ -2681,6 +2687,7 @@ class TimesNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\tTIMES");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;
@@ -2705,6 +2712,7 @@ class DivideNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#DIVIDE");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;
@@ -2802,9 +2810,9 @@ class LessNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#LESS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-
 	Codegen.p = p;
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
@@ -2827,6 +2835,7 @@ class GreaterNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#GREATER");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;
@@ -2851,6 +2860,7 @@ class LessEqNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#LESSEQUAL");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;
@@ -2875,6 +2885,7 @@ class GreaterEqNode extends RelationalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
+	p.println("\t\t#GREATEREQUAL");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.p = p;

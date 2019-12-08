@@ -16,6 +16,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		#INT
 	li    $t0, 1
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -29,6 +30,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		#INT
 	li    $t0, 0
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -42,6 +44,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		FALSE
 	li    $t0, 0
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -55,6 +58,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		TRUE
 	li    $t0, 1
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -62,6 +66,87 @@ __start:	# add __start label for main only
 	addu  $sp, $sp, 4
 	move  $t0, $t1
 	sw    $t0, -20($fp)	# store local variable d
+		#IF-THEN
+		#GREATER
+	lw    $t0, -8($fp)	# Load local variable a
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+		#INT
+	li    $t0, 1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	sgt   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L0		#branch if false
+	j     .L0
+.L0:
+		#IF-THEN
+		#GREATEREQUAL
+	lw    $t0, -8($fp)	# Load local variable a
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, -12($fp)	# Load local variable b
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	sge   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L1		#branch if false
+	j     .L1
+.L1:
+		#IF-THEN
+		#LESS
+	lw    $t0, -8($fp)	# Load local variable a
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, -12($fp)	# Load local variable b
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	slt   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L2		#branch if false
+	j     .L2
+.L2:
+		#IF-THEN
+		#LESSEQUAL
+	lw    $t0, -8($fp)	# Load local variable a
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, -12($fp)	# Load local variable b
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	sle   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	beq   $t0, 0, .L3		#branch if false
+	j     .L3
+.L3:
 		# FUNCTION EXIT
 _main_Exit:
 	lw    $ra, 0($fp)

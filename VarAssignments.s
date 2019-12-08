@@ -31,6 +31,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		#INT
 	li    $t0, 0
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -58,6 +59,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		#INT
 	li    $t0, 5
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -87,6 +89,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		TRUE
 	li    $t0, 1
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
@@ -100,6 +103,7 @@ __start:	# add __start label for main only
 	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
+		FALSE
 	li    $t0, 0
 	sw    $t0, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
