@@ -1102,7 +1102,7 @@ class PostDecStmtNode extends StmtNode {
         }
     }
 
-    public void codeGen(PrintWriter p) {
+    public void codeGen(PrintWriter p, String retLabel) {
     	p.println("\t\t#POSTDEC");
         myExp.codeGen(p);
         Codegen.genPop("$t0");
@@ -1509,8 +1509,18 @@ class WhileStmtNode extends StmtNode {
     	return start;
     }
 
-    public void codeGen(PrintWriter p) {
-            //do stuff
+    public void codeGen(PrintWriter p, String retLabel) {
+        p.println("\t\t#WHILE");
+        String loopLabel = Codegen.nextLabel();
+        String exitLabel = Codegen.nextLabel();
+        Codegen.genLabel(loopLabel);
+    	myExp.codeGen(p);
+        Codegen.genPop("$t0");
+        Codegen.generate("li", "$t1", "0");
+        Codegen.generateWithComment("beq", "branch if false", "$t0", "$t1", exitLabel);
+        myStmtList.codeGen(p, retLabel);
+        Codegen.generate("j", loopLabel);
+        Codegen.genLabel(exitLabel);
     }
 
         
@@ -2912,10 +2922,9 @@ class GreaterNode extends RelationalExpNode {
 	p.println("\t\t#GREATER");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.p = p;
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("sgt", "$t0", "$t0", "$t1");
+	Codegen.genPop("$t1");
+	Codegen.generate("slt", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
 

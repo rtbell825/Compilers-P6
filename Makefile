@@ -64,6 +64,7 @@ test:
 	java -cp $(CP) P6 ReadandWrite.cflat ReadandWrite.s
 	java -cp $(CP) P6 IfStmts.cflat IfStmts.s
 	java -cp $(CP) P6 expnodetests.cflat expnodetests.s	
+	java -cp $(CP) P6 WhileStmt.cflat WhileStmt.s
 
 ###
 # clean
