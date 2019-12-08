@@ -68,6 +68,21 @@ __start:	# add __start label for main only
 	move  $t0, $t1
 	sw    $t0, -12($fp)	# store local variable y
 		#IF-THEN
+		#EQUALS
+	lw    $t0, -12($fp)	# Load local variable y
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+		#INT
+	li    $t0, 0
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
+	lw    $t1, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	lw    $t0, 4($sp)	#POP
+	addu  $sp, $sp, 4
+	seq   $t0, $t0, $t1
+	sw    $t0, 0($sp)	#PUSH
+	subu  $sp, $sp, 4
 	lw    $t0, 4($sp)	#POP
 	addu  $sp, $sp, 4
 	beq   $t0, 0, .L0		#branch if false

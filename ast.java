@@ -2774,9 +2774,40 @@ class EqualsNode extends EqualityExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        p.println("\t\t#EQUALS");
+	Type type1 = myExp1.typeCheck();
+        Type type2 = myExp2.typeCheck();
+
+	Codegen.p = p;
+	myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	// String
+	if(type1.isStringType() && type2.isStringType()){
+	    if(myExp1.equals(myExp2)){
+		// load equal values
+		Codegen.generate("li","$t0",0);
+		Codegen.genPush("$t0");
+		Codegen.generate("li","$t1",0);
+		Codegen.genPush("$t1");
+	    }
+	    else{
+		//load different values
+		Codegen.generate("li","$t0",1);
+		Codegen.genPush("$t0");
+		Codegen.generate("li","$t1",0);
+		Codegen.genPush("$t1");
+	    }
+
+	}
+	
+
+	Codegen.genPop("$t1");
+	Codegen.genPop("$t0");
+	Codegen.generate("seq", "$t0", "$t0", "$t1");
+	Codegen.genPush("$t0");
+
     }
-    
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2784,6 +2815,8 @@ class EqualsNode extends EqualityExpNode {
         myExp2.unparse(p, 0);
         p.print(")");
     }
+
+    
 }
 
 class NotEqualsNode extends EqualityExpNode {
@@ -2792,7 +2825,35 @@ class NotEqualsNode extends EqualityExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+        p.println("\t\t#NOTEQUAL");
+	Type type1 = myExp1.typeCheck();
+        Type type2 = myExp2.typeCheck();
+	
+	myExp1.codeGen(p);
+	myExp2.codeGen(p);
+	Codegen.p = p;
+	//String
+	if(type1.isStringType() && type2.isStringType()){
+	    if(myExp1.equals(myExp2)){
+		// load equal values
+		Codegen.generate("li","$t0",0);
+		Codegen.genPush("$t0");
+		Codegen.generate("li","$t1",0);
+		Codegen.genPush("$t1");
+	    }
+	    else{
+		//load different values
+		Codegen.generate("li","$t0",1);
+		Codegen.genPush("$t0");
+		Codegen.generate("li","$t1",0);
+		Codegen.genPush("$t1");
+	    }
+
+	}
+	    Codegen.genPop("$t1");
+	    Codegen.genPop("$t0");
+	    Codegen.generate("sne", "$t0", "$t0", "$t1");
+	    Codegen.genPush("$t0");
     }
     
     public void unparse(PrintWriter p, int indent) {
