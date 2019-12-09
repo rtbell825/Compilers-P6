@@ -431,7 +431,9 @@ class ExpListNode extends ASTnode {
     }
 
     public void codeGen(PrintWriter p) {
-            //do stuff
+    	for (ExpNode node : myExps) {
+            node.codeGen(p);
+        }
     }
 
     
@@ -1627,7 +1629,7 @@ class CallStmtNode extends StmtNode {
         myCall.typeCheck();
     }
     
-    public void codeGen(PrintWriter p) {
+    public void codeGen(PrintWriter p, String retLabel) {
         myCall.codeGen(p);
     }
 
@@ -2941,7 +2943,7 @@ class GreaterNode extends RelationalExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
 	Codegen.genPop("$t1");
-	Codegen.generate("sgt", "$t0", "$t0", "$t1");
+	Codegen.generate("slt", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
 

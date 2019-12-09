@@ -66,6 +66,8 @@ test:
 	java -cp $(CP) P6 expnodetests.cflat expnodetests.s	
 	java -cp $(CP) P6 WhileStmt.cflat WhileStmt.s
 	java -cp $(CP) P6 CallandReturn.cflat CallandReturn.s
+	java -cp $(CP) P6 Recursion.cflat Recursion.s
+	java -cp $(CP) P6 PassingVars.cflat PassingVars.s
 	
 
 ###

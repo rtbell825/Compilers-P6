@@ -1,0 +1,16 @@
+int func(int a) {
+    if (a > 100) {
+       return a;
+    }
+    else {
+    	 a++;
+	 func(a);
+    }
+}
+
+void main() {
+     int x;
+     x = 0;
+     cout << func(x);
+     return;
+}
