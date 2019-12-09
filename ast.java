@@ -2708,7 +2708,7 @@ class TimesNode extends ArithmeticExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("mulo", "$t0", "$t0", "$t1");
+	Codegen.generate("mult", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
     
