@@ -1684,14 +1684,14 @@ class ReturnStmtNode extends StmtNode {
         
     }
 
-    public void codeGen(PrintWriter p, String myLabel) {
+    public void codeGen(PrintWriter p, String retLabel) {
         p.println("\t\t#RETURN");
 	if(myExp != null){
 	    myExp.codeGen(p);
 	    Codegen.genPop("$v0");
 	}
 
-	Codegen.generate("b", myLabel);
+	Codegen.generate("b", retLabel);
     }
 
     
@@ -1983,6 +1983,9 @@ class IdNode extends ExpNode {
     public void codeGen(PrintWriter p) {
         if(mySym.isGlobal) {
         	Codegen.generateWithComment("lw", " Load global variable " + myStrVal, "$t0", "_" + myStrVal);
+        }
+        else if (mySym instanceof FnSym) {
+        	Codegen.genPop("$v0");
         }
         else {
         	Codegen.generateIndexed("lw", "$t0", "$fp", mySym.offset, " Load local variable " + myStrVal);
@@ -2315,7 +2318,7 @@ class CallExpNode extends ExpNode {
         p.println("\t\t#CALL");
 	myExpList.codeGen(p);
 	
-	Codegen.generate("jal","_"+myId.name());
+	Codegen.generate("jal", myId.name());
 	Codegen.genPush("$v0");
     }
         

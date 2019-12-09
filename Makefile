@@ -65,6 +65,8 @@ test:
 	java -cp $(CP) P6 IfStmts.cflat IfStmts.s
 	java -cp $(CP) P6 expnodetests.cflat expnodetests.s	
 	java -cp $(CP) P6 WhileStmt.cflat WhileStmt.s
+	java -cp $(CP) P6 CallandReturn.cflat CallandReturn.s
+	
 
 ###
 # clean

@@ -1,0 +1,14 @@
+int globalInt;
+
+int func(int a) {
+    a++;
+    return a;
+}
+
+void main() {
+     int x;
+     x = 0;
+     x = func(x);
+     cout << x;
+     return;
+}
