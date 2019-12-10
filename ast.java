@@ -2484,7 +2484,7 @@ class NotNode extends UnaryExpNode {
 	p.println("\t\t#NOT");
         myExp.codeGen(p);
 	Codegen.genPop("$t0");
-	Codegen.generate("seq", "$t0", "$t0", "0");
+	Codegen.generate("seq", "$t0", "$t0", "0");//fixme
 	Codegen.genPush("$t0");
     }
 
@@ -2847,7 +2847,7 @@ class EqualsNode extends EqualityExpNode {
 
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("seq", "$t0", "$t0", "$t1");
+	Codegen.generate("seq", "$t0", "$t0", "$t1");//fixme
 	Codegen.genPush("$t0");
 
     }
@@ -2895,7 +2895,7 @@ class NotEqualsNode extends EqualityExpNode {
 	}
 	    Codegen.genPop("$t1");
 	    Codegen.genPop("$t0");
-	    Codegen.generate("sne", "$t0", "$t0", "$t1");
+	    Codegen.generate("sne", "$t0", "$t0", "$t1");//fixme
 	    Codegen.genPush("$t0");
     }
     
