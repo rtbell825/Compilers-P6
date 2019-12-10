@@ -1853,7 +1853,7 @@ class TrueNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-	p.println("\t\tTRUE");
+	p.println("\t\ti#TRUE");
 	//load t0 with 1 for true
         Codegen.generate("li","$t0", 1);
     	//push t0
@@ -2705,7 +2705,7 @@ class TimesNode extends ArithmeticExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-	p.println("\t\tTIMES");
+	p.println("\t\t#TIMES");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
