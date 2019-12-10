@@ -2754,22 +2754,26 @@ class AndNode extends LogicalExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-	String isTrueLabel = Codegen.nextLabel();
-	String finishedLabel = Codegen.nextLabel();
-
-	//check LHS
-        myExp1.codeGen(p);
-	Codegen.p = p;
-	Codegen.genPop("$t0");
-	Codegen.generate("beq", "$t0", "0", isTrueLabel);
+		String isTrueLabel = Codegen.nextLabel();
+		String finishedLabel = Codegen.nextLabel();
 	
-	//check RHS
-	myExp2.codeGen(p);
-	Codegen.generate("b", finishedLabel);
-	Codegen.genLabel(isTrueLabel, "&& LHS false");
-
-	Codegen.genPush("$t0");
-	Codegen.genLabel(finishedLabel, "&& finished");
+		//check LHS
+	    myExp1.codeGen(p);
+		Codegen.genPop("$t0");
+		Codegen.generate("beq", "$t0", "0", isTrueLabel);
+		
+		//check RHS
+		myExp2.codeGen(p);
+		Codegen.genPop("$t0");
+		Codegen.generate("beq", "$t0", "0", isTrueLabel);
+		Codegen.generate("li", "$t0", 1);
+		Codegen.genPush("$t0");
+		Codegen.generate("b", finishedLabel);
+		Codegen.genLabel(isTrueLabel);
+	
+		Codegen.genPush("$t0");
+		Codegen.genLabel(finishedLabel);
+		return;
     }
     
     public void unparse(PrintWriter p, int indent) {
