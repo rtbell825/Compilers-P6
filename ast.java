@@ -1896,7 +1896,7 @@ class FalseNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-	p.println("\t\tFALSE");
+	p.println("\t\t#FALSE");
 	//load t0 with 0 for false
 	Codegen.generate("li", "$t0", 0);
 	//push t0
