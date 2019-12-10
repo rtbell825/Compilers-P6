@@ -2442,7 +2442,7 @@ class UnaryMinusNode extends UnaryExpNode {
         p.println("\t\t#UNARYMINUS");
         myExp.codeGen(p);
         Codegen.genPop("$t0");
-        Codegen.generate("neg", "$t0", "$t0", "0");
+        Codegen.generate("neg", "$t0", "$t0");
         Codegen.genPush("$t0");
 
     }
@@ -2484,7 +2484,7 @@ class NotNode extends UnaryExpNode {
 	p.println("\t\t#NOT");
         myExp.codeGen(p);
 	Codegen.genPop("$t0");
-	Codegen.generate("seq", "$t0", "$t0", "0");//fixme
+	Codegen.generate("seq", "$t0", "$t0", "0");
 	Codegen.genPush("$t0");
     }
 
@@ -2658,8 +2658,8 @@ class PlusNode extends ArithmeticExpNode {
 	p.println("\t\t#PLUS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
+	Codegen.genPop("$t1");
 	Codegen.generate("add", "$t0", "$t0", "$t1");
 
 	Codegen.genPush("$t0");
@@ -2684,8 +2684,8 @@ class MinusNode extends ArithmeticExpNode {
 	p.println("\t\t#MINUS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
+	Codegen.genPop("$t1");
 	Codegen.generate("sub", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
@@ -2708,8 +2708,8 @@ class TimesNode extends ArithmeticExpNode {
 	p.println("\t\tTIMES");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
+	Codegen.genPop("$t1");
 	Codegen.generate("mult", "$t0", "$t0", "$t1"); //fixme?
 	Codegen.genPush("$t0");
     }
@@ -2732,8 +2732,8 @@ class DivideNode extends ArithmeticExpNode {
 	p.println("\t\t#DIVIDE");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
+	Codegen.genPop("$t1");
 	Codegen.generate("div", "$t0", "$t0", "$t1");
 
 	Codegen.genPush("$t0");
@@ -2801,11 +2801,16 @@ class OrNode extends LogicalExpNode {
 	
 	//checkRHS
 	myExp2.codeGen(p);
-	Codegen.generate("b", finishedLabel);
-
-	Codegen.genLabel(isTrueLabel, "|| LHS true");
+	Codegen.genPop("t0");
+	Codegen.generate("beq", "t0", "1", isTrueLabel);
+	Codegen.generate("li", "t0", 1);
 	Codegen.genPush("$t0");
-	Codegen.genLabel(finishedLabel, "|| finished");
+	Codegen.generate("b", finishedLabel);
+	Codegen.genLabel(isTrueLabel);
+
+	Codegen.genPush("t0");
+	Codegen.genLabel(finishedLabel);
+	return;
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2833,9 +2838,9 @@ class EqualsNode extends EqualityExpNode {
 	if(type1.isStringType() && type2.isStringType()){
 	    if(myExp1.equals(myExp2)){
 		// load equal values
-		Codegen.generate("li","$t0",0);
+		Codegen.generate("li","$t0",1);
 		Codegen.genPush("$t0");
-		Codegen.generate("li","$t1",0);
+		Codegen.generate("li","$t1",1);
 		Codegen.genPush("$t1");
 	    }
 	    else{
@@ -2883,9 +2888,9 @@ class NotEqualsNode extends EqualityExpNode {
 	if(type1.isStringType() && type2.isStringType()){
 	    if(myExp1.equals(myExp2)){
 		// load equal values
-		Codegen.generate("li","$t0",0);
+		Codegen.generate("li","$t0",1);
 		Codegen.genPush("$t0");
-		Codegen.generate("li","$t1",0);
+		Codegen.generate("li","$t1",1);
 		Codegen.genPush("$t1");
 	    }
 	    else{
@@ -2897,9 +2902,9 @@ class NotEqualsNode extends EqualityExpNode {
 	    }
 
 	}
-	    Codegen.genPop("$t1");
 	    Codegen.genPop("$t0");
-	    Codegen.generate("sne", "$t0", "$t0", "$t1");//fixme
+	    Codegen.genPop("$t1");
+	    Codegen.generate("sne", "$t0", "$t0", "$t1");
 	    Codegen.genPush("$t0");
     }
     
@@ -2921,8 +2926,8 @@ class LessNode extends RelationalExpNode {
 	p.println("\t\t#LESS");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
+	Codegen.genPop("$t1");
 	Codegen.generate("slt", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
@@ -2947,7 +2952,7 @@ class GreaterNode extends RelationalExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
 	Codegen.genPop("$t1");
-	Codegen.generate("slt", "$t0", "$t0", "$t1");
+	Codegen.generate("sgt", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
 
@@ -2969,9 +2974,9 @@ class LessEqNode extends RelationalExpNode {
 	p.println("\t\t#LESSEQUAL");
         myExp1.codeGen(p);
 	myExp2.codeGen(p);
-	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("sle", "$t0", "$t0", "$t1"); //fixme
+	Codegen.genPop("$t1");
+	Codegen.generate("sle", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
 
@@ -2995,7 +3000,7 @@ class GreaterEqNode extends RelationalExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
 	Codegen.genPop("$t1");
-	Codegen.generate("sge", "$t0", "$t0", "$t1"); //fixme
+	Codegen.generate("sge", "$t0", "$t0", "$t1");
 	Codegen.genPush("$t0");
     }
 
