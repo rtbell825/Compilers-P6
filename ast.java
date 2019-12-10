@@ -1807,7 +1807,7 @@ class StringLitNode extends ExpNode {
 	//label for string literal
 	String myLabel = Codegen.nextLabel();
 	
-	p.println(myLabel + "\t.asciiz " + myStrVal); 
+	p.println(myLabel + "\t.asciiz\t" + myStrVal); 
 	
 	//load address t0 with string label
 	Codegen.generate("la","$t0",myLabel);
@@ -2710,7 +2710,7 @@ class TimesNode extends ArithmeticExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t0");
 	Codegen.genPop("$t1");
-	Codegen.generate("mult", "$t0", "$t0", "$t1"); //fixme?
+	Codegen.generate("mulou", "$t0", "$t0", "$t1"); //fixme?
 	Codegen.genPush("$t0");
     }
     
