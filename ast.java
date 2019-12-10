@@ -1853,7 +1853,7 @@ class TrueNode extends ExpNode {
     }
 
     public void codeGen(PrintWriter p) {
-	p.println("\t\ti#TRUE");
+	p.println("\t\t#TRUE");
 	//load t0 with 1 for true
         Codegen.generate("li","$t0", 1);
     	//push t0
