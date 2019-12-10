@@ -1807,7 +1807,7 @@ class StringLitNode extends ExpNode {
 	//label for string literal
 	String myLabel = Codegen.nextLabel();
 	
-	p.println(myLabel + "\t.asciiz\t" + myStrVal); 
+	p.println(myLabel + "\t.asciiz " + myStrVal); 
 	
 	//load address t0 with string label
 	Codegen.generate("la","$t0",myLabel);
@@ -2801,14 +2801,14 @@ class OrNode extends LogicalExpNode {
 	
 	//checkRHS
 	myExp2.codeGen(p);
-	Codegen.genPop("t0");
-	Codegen.generate("beq", "t0", "1", isTrueLabel);
-	Codegen.generate("li", "t0", 1);
+	Codegen.genPop("$t0");
+	Codegen.generate("beq", "$t0", "1", isTrueLabel);
+	Codegen.generate("li", "$t0", 1);
 	Codegen.genPush("$t0");
 	Codegen.generate("b", finishedLabel);
 	Codegen.genLabel(isTrueLabel);
 
-	Codegen.genPush("t0");
+	Codegen.genPush("$t0");
 	Codegen.genLabel(finishedLabel);
 	return;
     }
