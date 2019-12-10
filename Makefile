@@ -63,12 +63,13 @@ test:
 	java -cp $(CP) P6 VarAssignments.cflat VarAssignments.s
 	java -cp $(CP) P6 ReadandWrite.cflat ReadandWrite.s
 	java -cp $(CP) P6 IfStmts.cflat IfStmts.s
-	java -cp $(CP) P6 expnodetests.cflat expnodetests.s	
 	java -cp $(CP) P6 WhileStmt.cflat WhileStmt.s
 	java -cp $(CP) P6 CallandReturn.cflat CallandReturn.s
 	java -cp $(CP) P6 Recursion.cflat Recursion.s
 	java -cp $(CP) P6 PassingVars.cflat PassingVars.s
-	
+	java -cp $(CP) P6 Comparisons.cflat Comparisons.s
+	java -cp $(CP) P6 Arithmetic.cflat Arithmetic.s
+
 
 ###
 # clean

@@ -1243,7 +1243,7 @@ class WriteStmtNode extends StmtNode {
     	
     	myExp.codeGen(p);
 	
-	Codegen.genPop("$a0");
+	Codegen.genPop("$a0"); //fixme?
 	
 	//1 is used for ints, bool is represented as int (0 or 1)
 	if(myType.isIntType() || myType.isBoolType()){
@@ -2710,7 +2710,7 @@ class TimesNode extends ArithmeticExpNode {
 	myExp2.codeGen(p);
 	Codegen.genPop("$t1");
 	Codegen.genPop("$t0");
-	Codegen.generate("mult", "$t0", "$t0", "$t1");
+	Codegen.generate("mult", "$t0", "$t0", "$t1"); //fixme?
 	Codegen.genPush("$t0");
     }
     

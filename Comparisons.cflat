@@ -26,6 +26,17 @@ int main () {
         }
         if(a != b && a < b){
         }
+
+	if(!c){
+	}
+
+	if("hi" == "hi"){
+	}
+
+	if(a > (a - b)){
+	}
+	if((a * a) > (a - a)){
+	}
 }
 
 
