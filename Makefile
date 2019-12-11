@@ -69,7 +69,7 @@ test:
 	java -cp $(CP) P6 PassingVars.cflat PassingVars.s
 	java -cp $(CP) P6 Comparisons.cflat Comparisons.s
 	java -cp $(CP) P6 Arithmetic.cflat Arithmetic.s
-
+	java -cp $(CP) P6 smallTest.cflat smallTest.s
 
 ###
 # clean
